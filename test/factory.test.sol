@@ -3,9 +3,11 @@ pragma solidity 0.7.6;
 import "forge-std/Test.sol";
 import "../src/contracts/Factory.sol";
 import "../src/contracts/modules/MainModule.sol";
+import "../src/contracts/utils/LibAddress.sol";
 import {console} from "forge-std/console.sol";
 
-contract FactoryTest is Test{
+contract FactoryTest is Test {
+    using LibAddress for address;
     Factory factory;
     MainModule mainModule;
     bytes32 imageHash = "DefaultImageHash";
@@ -27,10 +29,10 @@ contract FactoryTest is Test{
             address(mainModule),
             imageHash
         );
-        console.log(predict);
-        address deployedAddress = factory.deploy(address(mainModule), imageHash);
-        console.log(deployedAddress);
-        assert(predict == factory.deploy(address(mainModule), imageHash));
+
+        console.log("Predicted Address: %s", predict);
+        factory.deploy(address(mainModule), imageHash);
+        assertTrue(predict.isContract());
     }
 
     string constant WALLET_CODE =
@@ -57,6 +59,23 @@ contract FactoryTest is Test{
                 bytes32(codeHash)
             )
         );
-        return address(this);
+
+        return bytesToAddress(bytes32ToBytes(salt));
+    }
+
+    function bytesToAddress(
+        bytes memory bys
+    ) private pure returns (address addr) {
+        assembly {
+            addr := mload(add(bys, 20))
+        }
+    }
+
+    function bytes32ToBytes(bytes32 input) public pure returns (bytes memory) {
+        bytes memory b = new bytes(32);
+        assembly {
+            mstore(add(b, 32), input) // set the bytes data
+        }
+        return b;
     }
 }

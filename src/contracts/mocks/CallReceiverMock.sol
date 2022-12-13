@@ -14,10 +14,10 @@ contract CallReceiverMock {
     revertFlag = _revertFlag;
   }
 
-  function testCall(uint256 _valA, bytes calldata _valB) external payable {
-    require(!revertFlag, "CallReceiverMock#testCall: REVERT_FLAG");
+  // function testCall(uint256 _valA, bytes calldata _valB) external payable {
+  //   require(!revertFlag, "CallReceiverMock#testCall: REVERT_FLAG");
 
-    lastValA = _valA;
-    lastValB = _valB;
-  }
+  //   lastValA = _valA;
+  //   lastValB = _valB;
+  // }
 }
