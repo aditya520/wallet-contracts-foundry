@@ -31,6 +31,9 @@ contract FactoryTest is Test {
         );
 
         console.log("Predicted Address: %s", predict);
+        console.log("Factory address: %s", address(factory));
+        console.log("MainModule address: %s", address(mainModule));
+        console.log("ImageHash: %s", string(abi.encodePacked(imageHash)));
         factory.deploy(address(mainModule), imageHash);
         assertTrue(predict.isContract());
     }
@@ -47,7 +50,7 @@ contract FactoryTest is Test {
         bytes32 codeHash = keccak256(
             abi.encodePacked(
                 bytes(WALLET_CODE),
-                bytes32(bytes32(uint256(uint160(mainModule)) << 96))
+                bytes32(bytes20(mainModule))
             )
         );
 
@@ -60,7 +63,7 @@ contract FactoryTest is Test {
             )
         );
 
-        return bytesToAddress(bytes32ToBytes(salt));
+        return address(bytes20(salt));
     }
 
     function bytesToAddress(
