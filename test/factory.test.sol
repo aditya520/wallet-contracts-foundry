@@ -48,10 +48,8 @@ contract FactoryTest is Test {
         bytes32 imageHash
     ) public view returns (address) {
         bytes32 codeHash = keccak256(
-            abi.encodePacked(
-                bytes(WALLET_CODE),
-                bytes32(bytes20(mainModule))
-            )
+            abi.encodePacked(bytes(WALLET_CODE), 
+            rightShiftBinary2(bytes32(bytes20(mainModule)),12))
         );
 
         bytes32 salt = keccak256(
@@ -64,6 +62,14 @@ contract FactoryTest is Test {
         );
 
         return address(bytes20(salt));
+    }
+
+    // This function does the same than above using the >> operators
+    function rightShiftBinary2(
+        bytes32 a,
+        uint n
+    ) public pure returns (bytes32) {
+        return a >> n;
     }
 
     function bytesToAddress(
